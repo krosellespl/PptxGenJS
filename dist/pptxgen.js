@@ -4425,6 +4425,20 @@ var PptxGenJS = function(){
 		return outText;
 	}
 
+	/**
+	 * @param color_info
+	 * @param color_info.fill
+	 * {
+	 *   type: 'gradient',
+	 *   gradientType: 'radial', // linear, radial
+	 *   stops: [
+	 *     {color: 'FFFFFF', position: 100000} // position is % in ppt, looks like this unit is % * 1000
+	 *   ],
+	 *   angle: 45 // for linear. For radial maybe just match to closest one, and if undefined use the centered radial
+	 * }
+	 * @param back_info
+	 * @returns {string}
+	 */
 	function genXmlColorSelection(color_info, back_info) {
 		var colorVal;
 		var fillType = 'solid';
