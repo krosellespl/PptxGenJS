@@ -4432,9 +4432,9 @@ var PptxGenJS = function(){
 	 *   type: 'gradient',
 	 *   gradientType: 'radial', // linear, radial
 	 *   stops: [
-	 *     {color: 'FFFFFF', position: 100000} // position is % in ppt, looks like this unit is % * 1000
+	 *     {color: 'FFFFFF', position: 100000} // 0-100000. where the color should be in the gradient. It is % in ppt, the unit in xml is % * 1000
 	 *   ],
-	 *   angle: 45 // for linear. For radial maybe just match to closest one, and if undefined use the centered radial
+	 *   angle: 45 // 0-360. Angle that the gradient should be drawn at
 	 * }
 	 * @param back_info
 	 * @returns {string}
