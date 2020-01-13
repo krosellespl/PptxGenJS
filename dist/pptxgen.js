@@ -4381,6 +4381,64 @@ var PptxGenJS = function(){
 		return ( objOptions.isTableCell ? '<a:bodyPr/>' : bodyProperties );
 	}
 
+	function createGradientStopsElement(color_info) {
+		var outText = '';
+		outText += '<a:gsLst>';
+		color_info.stops.forEach(function(stopObj) {
+			outText += '<a:gs pos="' + stopObj.position + '">';
+			outText += createColorElement(stopObj.color);
+			outText += '</a:gs>';
+		});
+		outText += '</a:gsLst>';
+		return outText;
+	}
+
+	function createGradientShapeElements(color_info) {
+		var outText = '';
+		switch(color_info.gradientType) {
+			case 'linear':
+				outText += '<a:lin ang="' + color_info.angle * 60000 + '"/>';
+				break;
+			case 'radial':
+				// reference to make sense of this https://docs.microsoft.com/en-us/dotnet/api/documentformat.openxml.drawing.filltorectangle?view=openxml-2.8.1
+				// basically these define the box which will be filled with the primary stop, and then the rest of the gradient will fill the rest of the target shape.
+				// Note the bounding box can and commonly is OUTSIDE of the target shape.
+				var validDirectionAngles = {
+					45: 'l="100000" b="100000" r="-100000" t="-100000"',
+					135: 'l="-100000" b="100000" r="100000" t="-100000"',
+					225: 'r="100000" t="100000" l="-100000" b="-100000"',
+					315: 'l="100000" t="100000" r="-100000" b="-100000"'
+				};
+				var directionMeta;
+				if(color_info.angle) {
+					directionMeta = validDirectionAngles[color_info.angle];
+					if(!directionMeta) {
+						throw new Error("angle for radial gradient must be one of " + Object.keys(validDirectionAngles));
+					}
+				} else {
+					// if angle isn't provided for radial then assume the neutral radial emanating from the center
+					directionMeta = 'l="50000" t="50000" r="50000" b="50000"';
+				}
+				outText += '<a:path path="circle"><a:fillToRect ' + directionMeta +' /></a:path>';
+				break;
+		}
+		return outText;
+	}
+
+	/**
+	 * @param color_info
+	 * @param color_info.fill
+	 * {
+	 *   type: 'gradient',
+	 *   gradientType: 'radial', // linear, radial
+	 *   stops: [
+	 *     {color: 'FFFFFF', position: 100000} // 0-100000. where the color should be in the gradient. It is % in ppt, the unit in xml is % * 1000
+	 *   ],
+	 *   angle: 45 // 0-360. Angle that the gradient should be drawn at
+	 * }
+	 * @param back_info
+	 * @returns {string}
+	 */
 	function genXmlColorSelection(color_info, back_info) {
 		var colorVal;
 		var fillType = 'solid';
@@ -4405,6 +4463,9 @@ var PptxGenJS = function(){
 			switch ( fillType ) {
 				case 'solid':
 					outText += '<a:solidFill>'+ createColorElement(colorVal, internalElements) + '</a:solidFill>';
+					break;
+				case 'gradient':
+					outText += '<a:gradFill>' + createGradientStopsElement(color_info) + createGradientShapeElements(color_info) + '</a:gradFill>';
 					break;
 			}
 		}
