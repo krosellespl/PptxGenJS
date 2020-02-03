@@ -4182,7 +4182,7 @@ var PptxGenJS = function(){
 
       if (textObj.options.paraIndent) {
         bulletLvl0Margin = textObj.options.paraIndent * ONEPT;
-      }
+			}
 
 			if ( textObj.options.lineSpacing ) {
 				strXmlLnSpc = '<a:lnSpc><a:spcPts val="' + textObj.options.lineSpacing + '00"/></a:lnSpc>';
@@ -4232,6 +4232,12 @@ var PptxGenJS = function(){
 				strXmlBullet = '<a:buSzPct val="100000"/><a:buChar char="'+ BULLET_TYPES['DEFAULT'] +'"/>';
 			}
 			else {
+				//If the user specifies an option called 'bulletWidthIndent' as true for non-bulleted text, then the
+				//text will have a left margin with any indent level specified.
+				//Default margin with bulletWidthIndent and no 'indentLevel' specified: Width between a bullet point to the starting text on the same line
+				if (textObj.options.bulletWidthIndent) {
+					paragraphPropXml += ' marL="'+ (textObj.options.indentLevel && textObj.options.indentLevel > 0 ? bulletLvl0Margin+(bulletLvl0Margin*textObj.options.indentLevel) : bulletLvl0Margin) + '"';
+				}
 				strXmlBullet = '<a:buNone/>';
 			}
 
