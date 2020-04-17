@@ -4512,7 +4512,7 @@ var PptxGenJS = function(){
 		strXml += ' <Default Extension="mp4" ContentType="video/mp4"/>'; // NOTE: Hard-Code this extension as it wont be created in loop below (as extn != type)
 		gObjPptx.slides.forEach(function(slide,idx){
 			slide.rels.forEach(function(rel,idy){
-				if ( rel.type != 'image' && rel.type != 'online' && rel.type != 'chart' && rel.extn != 'm4v' && strXml.indexOf(rel.type) == -1 ) {
+				if ( rel.type != 'image' && rel.type != 'online' && rel.type != 'chart' && rel.type != 'hyperlink' && rel.extn != 'm4v' && strXml.indexOf(rel.type) == -1 ) {
 					strXml += ' <Default Extension="'+ rel.extn +'" ContentType="'+ rel.type +'"/>';
 				}
 			});
