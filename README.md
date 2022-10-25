@@ -15,6 +15,20 @@ Quickly and easily create PowerPoint presentations with a few simple JavaScript 
 ### Additional Features
 * Use the unique [HTML-to-PowerPoint](#html-to-powerpoint-feature) feature to copy an HTML table into 1 or more Slides with a single command
 
+### Build
+npm install
+npm run build
+
+### Build in SVP PPT container
+svp-compose up
+svp-compose exec <ppt-container> bash
+cd node-modules/pptxgen
+# this is needed because containers have NODE_ENV=production so npm install only installs base dependencies
+npm install --only=dev
+npm install
+npm run build
+# make a change in ppt code or restart node and your changes should take effect in pptxgen
+
 **************************************************************************************************
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
